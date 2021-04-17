@@ -1,0 +1,91 @@
+import {Component} from 'react'
+
+import ThumbnailsList from '../ThumbnailsList'
+
+import './index.css'
+
+class Gallery extends Component {
+  state = {
+    selectedThumbnailId: 0,
+  }
+
+  updateSelectedImageUrl = id => {
+    this.setState({
+      selectedThumbnailId: id,
+    })
+  }
+
+  renderSelectedImage = () => {
+    const {photosData} = this.props
+    const {selectedThumbnailId} = this.state
+    const {imageUrl, imageAltText} = photosData[selectedThumbnailId]
+
+    return <img src={imageUrl} className="selected-image" alt={imageAltText} />
+  }
+
+  render() {
+    const {photosData} = this.props
+    const {selectedThumbnailId} = this.state
+
+    return (
+      <div className="app-container">
+        <div className="gallery-container">
+          {this.renderSelectedImage()}
+          <ThumbnailsList
+            photosData={photosData}
+            selectedThumbnailId={selectedThumbnailId}
+            updateSelectedImageUrl={this.updateSelectedImageUrl}
+          />
+        </div>
+      </div>
+    )
+  }
+}
+
+export default Gallery
+
+
+*****thumbnails*****
+import {Component} from 'react'
+
+import './index.css'
+
+class ThumbnailsList extends Component {
+  renderThumbnails = () => {
+    const {photosData, selectedThumbnailId, updateSelectedImageUrl} = this.props
+
+    return photosData.map(photo => {
+      const {id, thumbnailUrl, thumbnailAltText} = photo
+      const onClickThumbnail = () => {
+        updateSelectedImageUrl(id)
+      }
+
+      const btnClassName =
+        id === selectedThumbnailId
+          ? 'thumbnail-list-item selected-thumbnail-list-item'
+          : 'thumbnail-list-item'
+
+      return (
+        <li key={id} className={btnClassName} onClick={onClickThumbnail}>
+          <img
+            src={thumbnailUrl}
+            alt={thumbnailAltText}
+            className="thumbnail"
+          />
+        </li>
+      )
+    })
+  }
+
+  render() {
+    return (
+      <div className="gallery-details-container">
+        <h1 className="heading">Nature Photography</h1>
+        <p className="description">Nature Photography by Rahul</p>
+        <ul className="thumbnails-list-container">{this.renderThumbnails()}</ul>
+      </div>
+    )
+  }
+}
+
+export default ThumbnailsList
